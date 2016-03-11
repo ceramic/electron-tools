@@ -1,6 +1,7 @@
 (in-package :cl-user)
 (defpackage electron-tools-test
-  (:use :cl :fiveam))
+  (:use :cl :fiveam)
+  (:export :run-tests))
 (in-package :electron-tools-test)
 
 ;; Utilities
@@ -40,4 +41,5 @@
 (test mac-download
   (test-download-and-extract :mac :64))
 
-(run! 'tests)
+(defun run-tests ()
+  (run! 'tests))

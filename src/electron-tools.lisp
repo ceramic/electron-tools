@@ -1,11 +1,15 @@
 (in-package :cl-user)
 (defpackage electron-tools
   (:use :cl)
+  (:import-from :alexandria
+                :if-let)
   (:export :+download-url+
            :download-url
            :download
            :extract
-           :binary-pathname)
+           :binary-pathname
+           :get-release
+           :app-directory)
   (:documentation "Tools for Electron."))
 (in-package :electron-tools)
 
@@ -38,7 +42,15 @@ system, architecture.")
 
 (defun extract (pathname)
   "Extract an Electron snapshot into its containing directory."
-  (trivial-extract:extract-zip pathname)
+  (if-let (unzip (which:which "unzip"))
+    ;; Electron archive file for Darwin has symbolic links inside, and zip:unzip
+    ;; doesn't handle them.  for now avoid problem from this by using
+    ;; /usr/bin/unzip
+    (uiop:run-program (format nil "~S ~S -d ~S"
+                              (namestring unzip)
+                              (namestring pathname)
+                              (namestring (uiop:pathname-directory-pathname pathname))))
+    (trivial-extract:extract-zip pathname))
   ;; When on Unix, set the executable bit on the file
   #-(or win32 mswindows)
   (let* ((parent (uiop:pathname-directory-pathname pathname))
@@ -47,15 +59,33 @@ system, architecture.")
                      (probe-file (binary-pathname parent
                                                   :operating-system :mac)))))
     (when binary
-      (setf (osicat:file-permissions binary)
-            (list :user-read
-                  :user-write
-                  :user-exec)))))
+      (trivial-exe:ensure-executable binary))))
 
 (defun binary-pathname (directory &key operating-system)
   "The pathname to the Electron binary inside the directory it was extracted to."
   (merge-pathnames (case operating-system
                      (:linux #p"electron")
                      (:mac #p"Electron.app/Contents/MacOS/Electron")
-                     (:windows #p"electron.exe"))
+                     (:windows #p"electron.exe")
+                     (t (error "Unsupported operating system.")))
+                   directory))
+
+(defun get-release (directory &key operating-system version architecture)
+  "Download an Electron release to the directory."
+  (let ((archive (merge-pathnames #p"electron.zip" directory)))
+    ;; Download the release to the directory
+    (download archive :operating-system operating-system
+                      :version version
+                      :architecture architecture)
+    ;; Extract it
+    (extract archive)
+    ;; Delete it
+    (delete-file archive)
+    t))
+
+(defun app-directory (directory &key operating-system)
+  "The pathname to the application directory of an Electron release."
+  (merge-pathnames (if (eq operating-system :mac)
+                       #p"Electron.app/Contents/Resources/default_app/"
+                       #p"resources/default_app/")
                    directory))

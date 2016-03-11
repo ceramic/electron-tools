@@ -9,7 +9,11 @@
   :depends-on (:trivial-download
                :trivial-extract
                #-(or win32 mswindows)
-               :osicat)
+               :osicat
+               :trivial-exe
+               :which
+               :alexandria
+               :uiop)
   :components ((:module "src"
                 :serial t
                 :components
