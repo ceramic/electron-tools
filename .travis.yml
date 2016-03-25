@@ -26,7 +26,7 @@ script:
   - ros -e '(ql:quickload (list :fiveam))'
         -e '(setf fiveam:*debug-on-error* t
                   fiveam:*debug-on-failure* t)'
-        -e '(ql:quickload :electron-tool-test)'
+        -e '(ql:quickload :electron-tools-test)'
 
 notifications:
   email:
