@@ -3,9 +3,9 @@
   :maintainer "Fernando Borretti <eudoxiahp@gmail.com>"
   :license "MIT"
   :version "0.1"
-  :homepage ""
-  :bug-tracker ""
-  :source-control (:git "")
+  :homepage "https://github.com/ceramic/electron-tools"
+  :bug-tracker "https://github.com/ceramic/electron-tools/issues"
+  :source-control (:git "git@github.com:ceramic/electron-tools.git")
   :depends-on (:trivial-download
                :trivial-extract
                #-(or win32 mswindows)
