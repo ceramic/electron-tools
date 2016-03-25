@@ -26,10 +26,6 @@ script:
   - ros -e '(ql:quickload (list :fiveam))'
         -e '(setf fiveam:*debug-on-error* t
                   fiveam:*debug-on-failure* t)'
-        -e '(setf *debugger-hook*
-                  (lambda (c h)
-                    (declare (ignore c h))
-                    (uiop:quit -1)))'
         -e '(ql:quickload :electron-tool-test)'
 
 notifications:
