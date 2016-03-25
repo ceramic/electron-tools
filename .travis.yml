@@ -12,6 +12,7 @@ env:
 install:
   # Roswell
   - curl -L https://raw.githubusercontent.com/snmsts/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
+  - git clone https://github.com/eudoxia0/trivial-extract ~/lisp/trivial-extract/
 
 cache:
   directories:
