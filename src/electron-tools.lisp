@@ -46,7 +46,7 @@ system, architecture.")
     ;; Electron archive file for Darwin has symbolic links inside, and zip:unzip
     ;; doesn't handle them.  for now avoid problem from this by using
     ;; /usr/bin/unzip
-    (uiop:run-program (format nil "~S ~S -d ~S"
+    (uiop:run-program (format nil "~S -o ~S -d ~S"
                               (namestring unzip)
                               (namestring pathname)
                               (namestring (uiop:pathname-directory-pathname pathname))))
