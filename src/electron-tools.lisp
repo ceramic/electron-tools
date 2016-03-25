@@ -1,8 +1,6 @@
 (in-package :cl-user)
 (defpackage electron-tools
   (:use :cl)
-  (:import-from :alexandria
-                :if-let)
   (:export :+download-url+
            :download-url
            :download
@@ -42,15 +40,7 @@ system, architecture.")
 
 (defun extract (pathname)
   "Extract an Electron snapshot into its containing directory."
-  (if-let (unzip (which:which "unzip"))
-    ;; Electron archive file for Darwin has symbolic links inside, and zip:unzip
-    ;; doesn't handle them.  for now avoid problem from this by using
-    ;; /usr/bin/unzip
-    (uiop:run-program (format nil "~S -o ~S -d ~S"
-                              (namestring unzip)
-                              (namestring pathname)
-                              (namestring (uiop:pathname-directory-pathname pathname))))
-    (trivial-extract:extract-zip pathname))
+  (trivial-extract:extract-zip pathname)
   ;; When on Unix, set the executable bit on the file
   #-(or win32 mswindows)
   (let* ((parent (uiop:pathname-directory-pathname pathname))

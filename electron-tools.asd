@@ -11,8 +11,6 @@
                #-(or win32 mswindows)
                :osicat
                :trivial-exe
-               :which
-               :alexandria
                :uiop)
   :components ((:module "src"
                 :serial t
